@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { match } from 'ts-pattern'
+import { useTranslation } from 'react-i18next'
 import { colors, space, text } from '@shared/design/tokens.stylex'
 
 export type SortDirection = 'asc' | 'desc'
@@ -22,6 +23,7 @@ export function SortableHeader<TKey extends string>({
 	onToggle,
 	align = 'start',
 }: SortableHeaderProps<TKey>) {
+	const { t } = useTranslation()
 	const isActive = activeKey === sortKey
 	const indicator =
 		!isActive || !direction
@@ -37,7 +39,7 @@ export function SortableHeader<TKey extends string>({
 				type="button"
 				data-testid={`sort-${sortKey}`}
 				onClick={() => onToggle(sortKey)}
-				aria-label={`Sort by ${label}`}
+				aria-label={t('dashboard.accounts.sortBy', { label })}
 				{...stylex.props(styles.button, isActive && styles.active)}
 			>
 				{label}

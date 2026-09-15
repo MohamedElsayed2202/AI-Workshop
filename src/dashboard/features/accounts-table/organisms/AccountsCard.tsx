@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { Card, CardHeader, CardTitle } from '@shared/design-system/molecules/Card'
 import { DataTable } from '@shared/design-system/molecules/DataTable'
@@ -16,32 +17,83 @@ interface AccountsCardProps {
 }
 
 export function AccountsCard({ accounts, selectedAccountId, onSelectAccount }: AccountsCardProps) {
+	const { t } = useTranslation()
 	const { query, setQuery, sort, toggleSortBy, visibleAccounts, isEmpty } = useAccountsTable(accounts)
 
 	const header = (
 		<>
-			<SortableHeader label="Account" sortKey="name" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} />
-			<SortableHeader label="Plan" sortKey="plan" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} />
-			<SortableHeader label="Region" sortKey="region" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} />
-			<SortableHeader label="Owner" sortKey="owner" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} />
-			<SortableHeader label="MRR" sortKey="mrr" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} align="end" />
-			<SortableHeader label="Seats" sortKey="seats" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} align="end" />
-			<SortableHeader label="Status" sortKey="status" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} />
-			<SortableHeader label="Health" sortKey="health" activeKey={sort?.key ?? null} direction={sort?.direction ?? null} onToggle={toggleSortBy} />
+			<SortableHeader
+				label={t('dashboard.accounts.columns.account')}
+				sortKey="name"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.plan')}
+				sortKey="plan"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.region')}
+				sortKey="region"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.owner')}
+				sortKey="owner"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.mrr')}
+				sortKey="mrr"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+				align="end"
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.seats')}
+				sortKey="seats"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+				align="end"
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.status')}
+				sortKey="status"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+			/>
+			<SortableHeader
+				label={t('dashboard.accounts.columns.health')}
+				sortKey="health"
+				activeKey={sort?.key ?? null}
+				direction={sort?.direction ?? null}
+				onToggle={toggleSortBy}
+			/>
 		</>
 	)
 
 	return (
 		<Card>
 			<CardHeader align="center">
-				<CardTitle title="Accounts" subtitle={`${accounts.length} accounts`} />
+				<CardTitle title={t('dashboard.accounts.title')} subtitle={t('dashboard.accounts.count', { count: accounts.length })} />
 				<input
 					data-testid="table-filter"
 					type="text"
 					value={query}
 					onChange={(event) => setQuery(event.target.value)}
-					aria-label="Filter accounts"
-					placeholder="Filter by name, owner, plan, region, status…"
+					aria-label={t('dashboard.accounts.filterLabel')}
+					placeholder={t('dashboard.accounts.filterPlaceholder')}
 					{...stylex.props(styles.filter)}
 				/>
 			</CardHeader>
@@ -50,7 +102,7 @@ export function AccountsCard({ accounts, selectedAccountId, onSelectAccount }: A
 				testId="accounts-table"
 				minWidth="820px"
 				head={header}
-				footer={isEmpty ? <EmptyState testId="table-empty" message="No accounts match that filter." /> : null}
+				footer={isEmpty ? <EmptyState testId="table-empty" message={t('dashboard.accounts.empty')} /> : null}
 			>
 				{visibleAccounts.map((account) => (
 					<AccountRow

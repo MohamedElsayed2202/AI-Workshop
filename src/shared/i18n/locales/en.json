@@ -1,0 +1,124 @@
+{
+	"common": {
+		"cancel": "Cancel"
+	},
+	"nav": {
+		"dashboard": "Dashboard",
+		"users": "Users"
+	},
+	"session": {
+		"signOut": "Sign out"
+	},
+	"theme": {
+		"switchToLight": "Switch to light theme",
+		"switchToDark": "Switch to dark theme"
+	},
+	"language": {
+		"switchToEnglish": "Switch to English",
+		"switchToFrench": "Switch to French"
+	},
+	"overlay": {
+		"closePanel": "Close panel"
+	},
+	"login": {
+		"brand": "PulseBoard",
+		"heading": "Sign in",
+		"subheading": "Use your PulseBoard account to continue.",
+		"usernameLabel": "Username",
+		"passwordLabel": "Password",
+		"submit": "Sign in",
+		"submitting": "Signing in…",
+		"usernameRequired": "Enter your username.",
+		"passwordRequired": "Enter your password.",
+		"rejected": "Incorrect username or password."
+	},
+	"dashboard": {
+		"loading": "Loading dashboard…",
+		"allRegions": "all regions",
+		"kpi": {
+			"vsLastMonth": "vs last month",
+			"labels": {
+				"mrr": "Monthly recurring revenue",
+				"active-accounts": "Active accounts",
+				"churn-rate": "Churn rate",
+				"nps": "Net promoter score"
+			}
+		},
+		"revenueChart": {
+			"title": "Revenue vs target",
+			"subtitle": "Monthly recurring revenue, last 12 months",
+			"revenue": "Revenue",
+			"target": "Target",
+			"accessibleName": "Revenue versus target, {{from}} to {{to}}, monthly recurring revenue"
+		},
+		"accounts": {
+			"title": "Accounts",
+			"count_one": "{{count}} account",
+			"count_other": "{{count}} accounts",
+			"filterPlaceholder": "Filter by name, owner, plan, region, status…",
+			"filterLabel": "Filter accounts",
+			"empty": "No accounts match that filter.",
+			"openDetails": "Open details for {{name}}",
+			"sortBy": "Sort by {{label}}",
+			"columns": {
+				"account": "Account",
+				"plan": "Plan",
+				"region": "Region",
+				"owner": "Owner",
+				"mrr": "MRR",
+				"seats": "Seats",
+				"status": "Status",
+				"health": "Health"
+			}
+		},
+		"accountDetail": {
+			"eyebrow": "Account",
+			"plan": "Plan",
+			"region": "Region",
+			"mrr": "MRR",
+			"seats": "Seats",
+			"status": "Status",
+			"health": "Health",
+			"signedUp": "Signed up",
+			"lastActive": "Last active",
+			"owner": "Owner",
+			"notes": "Notes"
+		}
+	},
+	"users": {
+		"title": "Users",
+		"count_one": "{{count}} person",
+		"count_other": "{{count}} people",
+		"createButton": "+ New user",
+		"loading": "Loading users…",
+		"edit": "Edit",
+		"delete": "Delete",
+		"columns": {
+			"name": "Name",
+			"email": "Email",
+			"role": "Role",
+			"team": "Team",
+			"status": "Status",
+			"lastLogin": "Last login",
+			"actions": "Actions"
+		}
+	},
+	"userForm": {
+		"eyebrowEdit": "Edit user",
+		"eyebrowCreate": "Add user",
+		"titleCreate": "New user",
+		"nameLabel": "Name",
+		"emailLabel": "Email",
+		"roleLabel": "Role",
+		"teamLabel": "Team",
+		"save": "Save changes",
+		"create": "Create user",
+		"nameRequired": "Enter a name.",
+		"emailInvalid": "Enter a valid email address."
+	},
+	"userDelete": {
+		"title": "Delete user",
+		"description": "{{name}} will lose access to PulseBoard. This cannot be undone.",
+		"confirm": "Delete"
+	}
+}

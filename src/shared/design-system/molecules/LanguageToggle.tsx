@@ -1,22 +1,24 @@
 import * as stylex from '@stylexjs/stylex'
 import { useTranslation } from 'react-i18next'
-import { colors, radius, text } from '@shared/design/tokens.stylex'
-import { useTheme } from '@shared/hooks/useTheme'
+import { colors, radius, space, text } from '@shared/design/tokens.stylex'
+import { useLanguage } from '@shared/hooks/useLanguage'
 
-export function ThemeToggle() {
+export function LanguageToggle() {
 	const { t } = useTranslation()
-	const { isDark, toggleTheme } = useTheme()
+	const { language, toggleLanguage } = useLanguage()
+	const isFrench = language === 'fr'
 
 	return (
 		<button
 			type="button"
-			onClick={toggleTheme}
-			aria-pressed={isDark}
-			aria-label={isDark ? t('theme.switchToLight') : t('theme.switchToDark')}
-			title={isDark ? t('theme.switchToLight') : t('theme.switchToDark')}
+			onClick={toggleLanguage}
+			aria-pressed={isFrench}
+			aria-label={isFrench ? t('language.switchToEnglish') : t('language.switchToFrench')}
+			title={isFrench ? t('language.switchToEnglish') : t('language.switchToFrench')}
+			data-testid="language-toggle"
 			{...stylex.props(styles.toggle)}
 		>
-			<span aria-hidden>{isDark ? '☀' : '☾'}</span>
+			{isFrench ? 'FR' : 'EN'}
 		</button>
 	)
 }
@@ -34,9 +36,11 @@ const styles = stylex.create({
 		display: 'flex',
 		flexShrink: 0,
 		fontSize: text.body,
+		fontWeight: 600,
 		height: '40px',
 		justifyContent: 'center',
-		width: '40px',
+		minWidth: '40px',
+		paddingInline: space.xs,
 		outline: { default: 'none', ':focus-visible': `2px solid ${colors.brand}` },
 		outlineOffset: '2px',
 	},

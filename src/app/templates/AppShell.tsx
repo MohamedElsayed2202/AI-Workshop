@@ -1,11 +1,20 @@
 import * as stylex from '@stylexjs/stylex'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
+import { LanguageToggle } from '@shared/design-system/molecules/LanguageToggle'
 import { ThemeToggle } from '@shared/design-system/molecules/ThemeToggle'
 import { colors, layout, radius, space, text } from '@shared/design/tokens.stylex'
 import { SessionMenu } from '@auth/features/session/molecules/SessionMenu'
 import { dashboardQueryOptions } from '@dashboard/queries'
+
+/** "August 2026" (from data.json) -> the same month/year, spelled in the active language. */
+function formatPeriodLabel(period: string, language: string): string {
+	const parsed = new Date(period)
+	if (Number.isNaN(parsed.getTime())) return period
+	return new Intl.DateTimeFormat(language, { month: 'long', year: 'numeric' }).format(parsed)
+}
 
 /**
  * The application chrome: the one <h1> in the document, the one navigation, and
@@ -14,6 +23,7 @@ import { dashboardQueryOptions } from '@dashboard/queries'
  */
 export function AppShell() {
 	const { data } = useQuery(dashboardQueryOptions)
+	const { t, i18n } = useTranslation()
 
 	return (
 		<div {...stylex.props(styles.root)}>
@@ -25,12 +35,17 @@ export function AppShell() {
 					</div>
 
 					<nav aria-label="Main" {...stylex.props(styles.nav)}>
-						<ShellNavLink to="/" testId="nav-dashboard" label="Dashboard" />
-						<ShellNavLink to="/users" testId="nav-users" label="Users" />
+						<ShellNavLink to="/" testId="nav-dashboard" label={t('nav.dashboard')} />
+						<ShellNavLink to="/users" testId="nav-users" label={t('nav.users')} />
 					</nav>
 
 					<div {...stylex.props(styles.tools)}>
-						{data ? <p {...stylex.props(styles.meta)}>{data.meta.period} · all regions</p> : null}
+						{data ? (
+							<p {...stylex.props(styles.meta)}>
+								{formatPeriodLabel(data.meta.period, i18n.language)} · {t('dashboard.allRegions')}
+							</p>
+						) : null}
+						<LanguageToggle />
 						<ThemeToggle />
 						<SessionMenu />
 					</div>

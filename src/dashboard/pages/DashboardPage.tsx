@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import { useState } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { colors, space, text } from '@shared/design/tokens.stylex'
 import { dashboardQueryOptions } from '@dashboard/queries'
@@ -13,8 +14,9 @@ import type { Account } from '@/types'
 export function DashboardPage() {
 	const { data, isPending } = useQuery({ ...dashboardQueryOptions, placeholderData: keepPreviousData })
 	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
+	const { t } = useTranslation()
 
-	if (isPending || !data) return <p {...stylex.props(styles.loading)}>Loading dashboard…</p>
+	if (isPending || !data) return <p {...stylex.props(styles.loading)}>{t('dashboard.loading')}</p>
 
 	return (
 		<div {...stylex.props(styles.page)}>

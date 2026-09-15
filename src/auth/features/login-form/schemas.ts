@@ -1,17 +1,14 @@
 import * as yup from 'yup'
+import type { TFunction } from 'i18next'
 
-export const LOGIN_MESSAGES = {
-	username: 'Enter your username.',
-	password: 'Enter your password.',
-	rejected: 'Incorrect username or password.',
+export function buildLoginFormSchema(t: TFunction) {
+	return yup.object({
+		username: yup.string().trim().required(t('login.usernameRequired')),
+		password: yup.string().required(t('login.passwordRequired')),
+	})
 }
 
-export const loginFormSchema = yup.object({
-	username: yup.string().trim().required(LOGIN_MESSAGES.username),
-	password: yup.string().required(LOGIN_MESSAGES.password),
-})
-
-export type LoginFormValues = yup.InferType<typeof loginFormSchema>
+export type LoginFormValues = yup.InferType<ReturnType<typeof buildLoginFormSchema>>
 
 /** The field order that decides which inline message carries the error hook. */
 export const LOGIN_FIELD_ORDER = ['username', 'password'] as const

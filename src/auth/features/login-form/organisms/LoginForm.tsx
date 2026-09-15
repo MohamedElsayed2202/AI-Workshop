@@ -1,12 +1,14 @@
 import * as stylex from '@stylexjs/stylex'
+import { useMemo } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@shared/design-system/atoms/Button'
 import { TextField } from '@shared/design-system/atoms/TextField'
 import { FormField } from '@shared/design-system/molecules/FormField'
 import { colors, space, text } from '@shared/design/tokens.stylex'
 import { findFirstErroredField } from '@shared/helpers/forms'
-import { LOGIN_FIELD_ORDER, loginFormSchema, type LoginFormValues } from '../schemas'
+import { buildLoginFormSchema, LOGIN_FIELD_ORDER, type LoginFormValues } from '../schemas'
 
 interface LoginFormProps {
 	isSubmitting: boolean
@@ -16,6 +18,8 @@ interface LoginFormProps {
 
 /** Owns the form only. Credentials are checked by the API, never here. */
 export function LoginForm({ isSubmitting, rejectionMessage, onSubmit }: LoginFormProps) {
+	const { t } = useTranslation()
+	const loginFormSchema = useMemo(() => buildLoginFormSchema(t), [t])
 	const {
 		control,
 		handleSubmit,
@@ -37,7 +41,7 @@ export function LoginForm({ isSubmitting, rejectionMessage, onSubmit }: LoginFor
 				name="username"
 				render={({ field }) => (
 					<FormField
-						label="Username"
+						label={t('login.usernameLabel')}
 						htmlFor="login-username"
 						error={errors.username?.message}
 						errorTestId={primaryField === 'username' ? 'login-error' : undefined}
@@ -57,7 +61,7 @@ export function LoginForm({ isSubmitting, rejectionMessage, onSubmit }: LoginFor
 				name="password"
 				render={({ field }) => (
 					<FormField
-						label="Password"
+						label={t('login.passwordLabel')}
 						htmlFor="login-password"
 						error={errors.password?.message}
 						errorTestId={primaryField === 'password' ? 'login-error' : undefined}
@@ -80,7 +84,7 @@ export function LoginForm({ isSubmitting, rejectionMessage, onSubmit }: LoginFor
 			) : null}
 
 			<Button type="submit" fullWidth data-testid="login-submit" disabled={isSubmitting}>
-				{isSubmitting ? 'Signing in…' : 'Sign in'}
+				{isSubmitting ? t('login.submitting') : t('login.submit')}
 			</Button>
 		</form>
 	)

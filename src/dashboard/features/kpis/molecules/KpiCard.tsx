@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { colors, radius, shadow, space, text } from '@shared/design/tokens.stylex'
 import { formatDelta } from '@shared/helpers/format'
@@ -6,18 +7,19 @@ import { formatKpiValue, getDeltaDirection, isDeltaGoodNews } from '../utils'
 import type { Kpi } from '@/types'
 
 export function KpiCard({ kpi }: { kpi: Kpi }) {
+	const { t } = useTranslation()
 	const isGoodNews = isDeltaGoodNews(kpi.delta, kpi.higherIsBetter)
 	const direction = getDeltaDirection(kpi.delta)
 
 	return (
 		<article data-testid="kpi-card" {...stylex.props(styles.card)}>
-			<p {...stylex.props(styles.label)}>{kpi.label}</p>
+			<p {...stylex.props(styles.label)}>{t(`dashboard.kpi.labels.${kpi.id}`, { defaultValue: kpi.label })}</p>
 			<p {...stylex.props(styles.value)}>{formatKpiValue(kpi)}</p>
 			<p {...stylex.props(styles.footer)}>
 				<span {...stylex.props(styles.delta, isGoodNews ? styles.good : styles.bad)}>
 					<span aria-hidden>{direction === 'up' ? '▲' : '▼'}</span> {formatDelta(kpi.delta)}
 				</span>
-				<span {...stylex.props(styles.since)}>vs last month</span>
+				<span {...stylex.props(styles.since)}>{t('dashboard.kpi.vsLastMonth')}</span>
 			</p>
 		</article>
 	)

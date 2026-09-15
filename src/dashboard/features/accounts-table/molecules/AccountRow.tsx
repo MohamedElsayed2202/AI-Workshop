@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import { useTranslation } from 'react-i18next'
 import { HealthBar } from '@shared/design-system/atoms/HealthBar'
 import { colors, space } from '@shared/design/tokens.stylex'
 import { formatCurrency } from '@shared/helpers/format'
@@ -12,12 +13,13 @@ interface AccountRowProps {
 }
 
 export function AccountRow({ account, isSelected, onSelect }: AccountRowProps) {
+	const { t } = useTranslation()
 	return (
 		<tr
 			data-testid="account-row"
 			data-account-id={account.id}
 			onClick={() => onSelect(account)}
-			aria-label={`Open details for ${account.name}`}
+			aria-label={t('dashboard.accounts.openDetails', { name: account.name })}
 			{...stylex.props(styles.row, isSelected && styles.selected)}
 		>
 			<td {...stylex.props(styles.cell, styles.name)}>{account.name}</td>

@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex'
 import { useRef } from 'react'
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { Card, CardHeader, CardTitle } from '@shared/design-system/molecules/Card'
 import { colors, radius, space, text } from '@shared/design/tokens.stylex'
@@ -17,6 +18,7 @@ function getChartLayout(width: number) {
 }
 
 export function RevenueChart({ series }: { series: RevenuePoint[] }) {
+	const { t } = useTranslation()
 	const containerRef = useRef<HTMLDivElement>(null)
 	const width = useElementWidth(containerRef)
 	const { height, fontSize, axisWidth, axisHeight, margin } = getChartLayout(width)
@@ -27,25 +29,26 @@ export function RevenueChart({ series }: { series: RevenuePoint[] }) {
 
 	const first = series.at(0)
 	const last = series.at(-1)
-	const accessibleName = `Revenue versus target, ${first ? formatMonthLabel(first.month) : ''} to ${
-		last ? formatMonthLabel(last.month) : ''
-	}, monthly recurring revenue`
+	const accessibleName = t('dashboard.revenueChart.accessibleName', {
+		from: first ? formatMonthLabel(first.month) : '',
+		to: last ? formatMonthLabel(last.month) : '',
+	})
 
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle title="Revenue vs target" subtitle="Monthly recurring revenue, last 12 months" />
+				<CardTitle title={t('dashboard.revenueChart.title')} subtitle={t('dashboard.revenueChart.subtitle')} />
 			</CardHeader>
 
 			<div {...stylex.props(styles.body)}>
 				<ul {...stylex.props(styles.legend)}>
 					<li {...stylex.props(styles.legendItem)}>
 						<span aria-hidden {...stylex.props(styles.swatch, styles.revenueSwatch)} />
-						Revenue
+						{t('dashboard.revenueChart.revenue')}
 					</li>
 					<li {...stylex.props(styles.legendItem)}>
 						<span aria-hidden {...stylex.props(styles.swatch, styles.targetSwatch)} />
-						Target
+						{t('dashboard.revenueChart.target')}
 					</li>
 				</ul>
 
@@ -78,7 +81,10 @@ export function RevenueChart({ series }: { series: RevenuePoint[] }) {
 							<Tooltip
 								cursor={{ fill: colors.brandTint }}
 								labelFormatter={(label) => formatMonthLabel(String(label))}
-								formatter={(value, name) => [formatCurrency(Number(value)), name === 'revenue' ? 'Revenue' : 'Target']}
+								formatter={(value, name) => [
+									formatCurrency(Number(value)),
+									name === 'revenue' ? t('dashboard.revenueChart.revenue') : t('dashboard.revenueChart.target'),
+								]}
 							/>
 							<Bar dataKey="revenue" radius={[3, 3, 0, 0]} isAnimationActive={false}>
 								{series.map((point, index) => (

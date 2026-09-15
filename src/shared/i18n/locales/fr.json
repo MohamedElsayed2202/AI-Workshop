@@ -1,0 +1,124 @@
+{
+	"common": {
+		"cancel": "Annuler"
+	},
+	"nav": {
+		"dashboard": "Tableau de bord",
+		"users": "Utilisateurs"
+	},
+	"session": {
+		"signOut": "Se déconnecter"
+	},
+	"theme": {
+		"switchToLight": "Passer au thème clair",
+		"switchToDark": "Passer au thème sombre"
+	},
+	"language": {
+		"switchToEnglish": "Passer en anglais",
+		"switchToFrench": "Passer en français"
+	},
+	"overlay": {
+		"closePanel": "Fermer le panneau"
+	},
+	"login": {
+		"brand": "PulseBoard",
+		"heading": "Connexion",
+		"subheading": "Utilisez votre compte PulseBoard pour continuer.",
+		"usernameLabel": "Nom d'utilisateur",
+		"passwordLabel": "Mot de passe",
+		"submit": "Se connecter",
+		"submitting": "Connexion en cours…",
+		"usernameRequired": "Saisissez votre nom d'utilisateur.",
+		"passwordRequired": "Saisissez votre mot de passe.",
+		"rejected": "Nom d'utilisateur ou mot de passe incorrect."
+	},
+	"dashboard": {
+		"loading": "Chargement du tableau de bord…",
+		"allRegions": "toutes les régions",
+		"kpi": {
+			"vsLastMonth": "par rapport au mois dernier",
+			"labels": {
+				"mrr": "Revenu récurrent mensuel",
+				"active-accounts": "Comptes actifs",
+				"churn-rate": "Taux de résiliation",
+				"nps": "Score de recommandation net"
+			}
+		},
+		"revenueChart": {
+			"title": "Revenus par rapport à l'objectif",
+			"subtitle": "Revenu récurrent mensuel, 12 derniers mois",
+			"revenue": "Revenus",
+			"target": "Objectif",
+			"accessibleName": "Revenus par rapport à l'objectif, de {{from}} à {{to}}, revenu récurrent mensuel"
+		},
+		"accounts": {
+			"title": "Comptes",
+			"count_one": "{{count}} compte",
+			"count_other": "{{count}} comptes",
+			"filterPlaceholder": "Filtrer par nom, propriétaire, offre, région, statut…",
+			"filterLabel": "Filtrer les comptes",
+			"empty": "Aucun compte ne correspond à ce filtre.",
+			"openDetails": "Ouvrir les détails de {{name}}",
+			"sortBy": "Trier par {{label}}",
+			"columns": {
+				"account": "Compte",
+				"plan": "Offre",
+				"region": "Région",
+				"owner": "Propriétaire",
+				"mrr": "MRR",
+				"seats": "Licences",
+				"status": "Statut",
+				"health": "Santé"
+			}
+		},
+		"accountDetail": {
+			"eyebrow": "Compte",
+			"plan": "Offre",
+			"region": "Région",
+			"mrr": "MRR",
+			"seats": "Licences",
+			"status": "Statut",
+			"health": "Santé",
+			"signedUp": "Inscrit le",
+			"lastActive": "Dernière activité",
+			"owner": "Propriétaire",
+			"notes": "Notes"
+		}
+	},
+	"users": {
+		"title": "Utilisateurs",
+		"count_one": "{{count}} personne",
+		"count_other": "{{count}} personnes",
+		"createButton": "+ Nouvel utilisateur",
+		"loading": "Chargement des utilisateurs…",
+		"edit": "Modifier",
+		"delete": "Supprimer",
+		"columns": {
+			"name": "Nom",
+			"email": "E-mail",
+			"role": "Rôle",
+			"team": "Équipe",
+			"status": "Statut",
+			"lastLogin": "Dernière connexion",
+			"actions": "Actions"
+		}
+	},
+	"userForm": {
+		"eyebrowEdit": "Modifier l'utilisateur",
+		"eyebrowCreate": "Ajouter un utilisateur",
+		"titleCreate": "Nouvel utilisateur",
+		"nameLabel": "Nom",
+		"emailLabel": "E-mail",
+		"roleLabel": "Rôle",
+		"teamLabel": "Équipe",
+		"save": "Enregistrer les modifications",
+		"create": "Créer l'utilisateur",
+		"nameRequired": "Saisissez un nom.",
+		"emailInvalid": "Saisissez une adresse e-mail valide."
+	},
+	"userDelete": {
+		"title": "Supprimer l'utilisateur",
+		"description": "{{name}} perdra l'accès à PulseBoard. Cette action est irréversible.",
+		"confirm": "Supprimer"
+	}
+}

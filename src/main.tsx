@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import { startMockServer } from './mocks/browser'
+import './shared/i18n/i18n'
 import './index.css'
 
 /**

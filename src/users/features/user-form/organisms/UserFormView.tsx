@@ -1,6 +1,8 @@
 import * as stylex from '@stylexjs/stylex'
+import { useMemo } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@shared/design-system/atoms/Button'
 import { Select } from '@shared/design-system/atoms/Select'
 import { TextField } from '@shared/design-system/atoms/TextField'
@@ -8,7 +10,7 @@ import { FormField } from '@shared/design-system/molecules/FormField'
 import { Modal, type OverlayPresentation } from '@shared/design-system/molecules/Modal'
 import { space } from '@shared/design/tokens.stylex'
 import { findFirstErroredField } from '@shared/helpers/forms'
-import { FIELD_ORDER, USER_ROLES, userFormSchema, type UserFormValues } from '../schemas'
+import { buildUserFormSchema, FIELD_ORDER, USER_ROLES, type UserFormValues } from '../schemas'
 import { userToFormValues } from '../utils'
 import type { User } from '@/types'
 
@@ -22,6 +24,8 @@ interface UserFormViewProps {
 
 /** Owns the form. No data hooks live here — the container passes everything in. */
 export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }: UserFormViewProps) {
+	const { t } = useTranslation()
+	const userFormSchema = useMemo(() => buildUserFormSchema(t), [t])
 	const {
 		control,
 		handleSubmit,
@@ -39,8 +43,8 @@ export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }
 			presentation={presentation}
 			testId="user-form-panel"
 			closeTestId="user-form-close"
-			eyebrow={user ? 'Edit user' : 'Add user'}
-			title={user ? user.name : 'New user'}
+			eyebrow={user ? t('userForm.eyebrowEdit') : t('userForm.eyebrowCreate')}
+			title={user ? user.name : t('userForm.titleCreate')}
 			onClose={onClose}
 		>
 			<form data-testid="user-form" noValidate onSubmit={handleSubmit(onSubmit)} {...stylex.props(styles.form)}>
@@ -49,7 +53,7 @@ export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }
 					name="name"
 					render={({ field }) => (
 						<FormField
-							label="Name"
+							label={t('userForm.nameLabel')}
 							htmlFor="user-name"
 							error={errors.name?.message}
 							errorTestId={erroredField === 'name' ? 'form-error' : undefined}
@@ -64,7 +68,7 @@ export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }
 					name="email"
 					render={({ field }) => (
 						<FormField
-							label="Email"
+							label={t('userForm.emailLabel')}
 							htmlFor="user-email"
 							error={errors.email?.message}
 							errorTestId={erroredField === 'email' ? 'form-error' : undefined}
@@ -79,7 +83,7 @@ export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }
 					name="role"
 					render={({ field }) => (
 						<FormField
-							label="Role"
+							label={t('userForm.roleLabel')}
 							htmlFor="user-role"
 							error={errors.role?.message}
 							errorTestId={erroredField === 'role' ? 'form-error' : undefined}
@@ -94,7 +98,7 @@ export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }
 					name="team"
 					render={({ field }) => (
 						<FormField
-							label="Team"
+							label={t('userForm.teamLabel')}
 							htmlFor="user-team"
 							error={errors.team?.message}
 							errorTestId={erroredField === 'team' ? 'form-error' : undefined}
@@ -106,10 +110,10 @@ export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }
 
 				<div {...stylex.props(styles.actions)}>
 					<Button variant="outlined" data-testid="user-cancel" onClick={onClose}>
-						Cancel
+						{t('common.cancel')}
 					</Button>
 					<Button type="submit" data-testid="user-save" disabled={isSaving}>
-						{user ? 'Save changes' : 'Create user'}
+						{user ? t('userForm.save') : t('userForm.create')}
 					</Button>
 				</div>
 			</form>

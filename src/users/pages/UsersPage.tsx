@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { Button } from '@shared/design-system/atoms/Button'
 import { Card, CardHeader, CardTitle } from '@shared/design-system/molecules/Card'
@@ -12,6 +13,7 @@ import { UsersTable } from '@users/features/user-list/organisms/UsersTable'
 
 export function UsersPage() {
 	const { data: users, isPending } = useQuery({ ...usersQueryOptions, placeholderData: keepPreviousData })
+	const { t } = useTranslation()
 	const {
 		editingUser,
 		isFormOpen,
@@ -27,14 +29,14 @@ export function UsersPage() {
 		<div data-testid="users-page" {...stylex.props(styles.page)}>
 			<Card>
 				<CardHeader align="center">
-					<CardTitle title="Users" subtitle={`${users?.length ?? 0} people`} />
+					<CardTitle title={t('users.title')} subtitle={t('users.count', { count: users?.length ?? 0 })} />
 					<Button data-testid="user-create" onClick={openCreateForm}>
-						+ New user
+						{t('users.createButton')}
 					</Button>
 				</CardHeader>
 
 				{isPending || !users ? (
-					<p {...stylex.props(styles.loading)}>Loading users…</p>
+					<p {...stylex.props(styles.loading)}>{t('users.loading')}</p>
 				) : (
 					<UsersTable users={users} onEdit={openEditForm} onDelete={requestDeletion} />
 				)}

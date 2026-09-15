@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { useEffect, useRef, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { colors, layout, radius, shadow, space, text } from '@shared/design/tokens.stylex'
 
@@ -31,6 +32,7 @@ export function Modal({
 	onClose,
 	children,
 }: ModalProps) {
+	const { t } = useTranslation()
 	const dialogRef = useRef<HTMLDialogElement>(null)
 
 	useEffect(() => {
@@ -64,7 +66,7 @@ export function Modal({
 						type="button"
 						data-testid={closeTestId}
 						onClick={onClose}
-						aria-label="Close panel"
+						aria-label={t('overlay.closePanel')}
 						{...stylex.props(styles.close)}
 					>
 						<span aria-hidden>✕</span>

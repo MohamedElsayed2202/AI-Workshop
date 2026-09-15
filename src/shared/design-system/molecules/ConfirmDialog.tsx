@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { Button } from '@shared/design-system/atoms/Button'
 import { colors, radius, shadow, space, text } from '@shared/design/tokens.stylex'
@@ -26,6 +27,7 @@ export function ConfirmDialog({
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) {
+	const { t } = useTranslation()
 	const dialogRef = useRef<HTMLDialogElement>(null)
 
 	useEffect(() => {
@@ -53,7 +55,7 @@ export function ConfirmDialog({
 				<p {...stylex.props(styles.description)}>{description}</p>
 				<div {...stylex.props(styles.actions)}>
 					<Button variant="outlined" data-testid={cancelTestId} onClick={onCancel}>
-						Cancel
+						{t('common.cancel')}
 					</Button>
 					<Button variant="destructive" data-testid={confirmTestId} onClick={onConfirm}>
 						{confirmLabel}

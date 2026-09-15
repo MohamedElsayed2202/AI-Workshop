@@ -1,5 +1,6 @@
 import * as stylex from '@stylexjs/stylex'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Avatar } from '@shared/design-system/atoms/Avatar'
 import { Button } from '@shared/design-system/atoms/Button'
 import { breakpoint } from '@shared/design/media.stylex'
@@ -12,6 +13,7 @@ import { useAuthStore } from '@auth/stores/authStore'
  */
 export function SessionMenu() {
 	const navigate = useNavigate()
+	const { t } = useTranslation()
 	const session = useAuthStore((state) => state.session)
 	const signOut = useAuthStore((state) => state.signOut)
 
@@ -27,7 +29,7 @@ export function SessionMenu() {
 			<Avatar name={session.username} />
 			<span {...stylex.props(styles.username)}>{session.username}</span>
 			<Button variant="outlined" compact data-testid="sign-out" onClick={handleSignOut}>
-				Sign out
+				{t('session.signOut')}
 			</Button>
 		</div>
 	)

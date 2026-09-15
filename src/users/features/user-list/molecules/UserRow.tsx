@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import { useTranslation } from 'react-i18next'
 import { Avatar } from '@shared/design-system/atoms/Avatar'
 import { Button } from '@shared/design-system/atoms/Button'
 import { colors, space } from '@shared/design/tokens.stylex'
@@ -13,6 +14,7 @@ interface UserRowProps {
 }
 
 export function UserRow({ user, onEdit, onDelete }: UserRowProps) {
+	const { t } = useTranslation()
 	return (
 		<tr data-testid="user-row" data-user-id={user.id} {...stylex.props(styles.row)}>
 			<td {...stylex.props(styles.cell)}>
@@ -31,10 +33,10 @@ export function UserRow({ user, onEdit, onDelete }: UserRowProps) {
 			<td {...stylex.props(styles.cell)}>
 				<span {...stylex.props(styles.actions)}>
 					<Button variant="outlined" compact data-testid="user-edit" onClick={() => onEdit(user)}>
-						Edit
+						{t('users.edit')}
 					</Button>
 					<Button variant="danger" compact data-testid="user-delete" onClick={() => onDelete(user)}>
-						Delete
+						{t('users.delete')}
 					</Button>
 				</span>
 			</td>

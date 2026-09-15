@@ -1,16 +1,18 @@
 import * as stylex from '@stylexjs/stylex'
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { breakpoint } from '@shared/design/media.stylex'
 import { colors, radius, shadow, space, text } from '@shared/design/tokens.stylex'
 import { LoginForm } from '@auth/features/login-form/organisms/LoginForm'
-import { LOGIN_MESSAGES, type LoginFormValues } from '@auth/features/login-form/schemas'
+import type { LoginFormValues } from '@auth/features/login-form/schemas'
 import { useLogin } from '@auth/queries'
 import { useAuthStore } from '@auth/stores/authStore'
 
 export function LoginPage() {
 	const navigate = useNavigate()
 	const location = useLocation()
+	const { t } = useTranslation()
 	const session = useAuthStore((state) => state.session)
 	const login = useLogin()
 	const [rejectionMessage, setRejectionMessage] = useState<string | null>(null)
@@ -29,7 +31,7 @@ export function LoginPage() {
 			navigate(intended, { replace: true })
 		} catch {
 			// A 401 is an expected outcome of this form, not a fault to report.
-			setRejectionMessage(LOGIN_MESSAGES.rejected)
+			setRejectionMessage(t('login.rejected'))
 		}
 	}
 
@@ -38,12 +40,12 @@ export function LoginPage() {
 			<div {...stylex.props(styles.column)}>
 				<div {...stylex.props(styles.brand)}>
 					<span aria-hidden {...stylex.props(styles.mark)} />
-					<h1 {...stylex.props(styles.wordmark)}>PulseBoard</h1>
+					<h1 {...stylex.props(styles.wordmark)}>{t('login.brand')}</h1>
 				</div>
 
 				<section {...stylex.props(styles.card)}>
-					<h2 {...stylex.props(styles.title)}>Sign in</h2>
-					<p {...stylex.props(styles.subtitle)}>Use your PulseBoard account to continue.</p>
+					<h2 {...stylex.props(styles.title)}>{t('login.heading')}</h2>
+					<p {...stylex.props(styles.subtitle)}>{t('login.subheading')}</p>
 
 					<div {...stylex.props(styles.formSlot)}>
 						<LoginForm
