@@ -1,3 +1,5 @@
+import { getAuthToken, handleUnauthorized } from './authToken'
+
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
 
 class HttpError extends Error {
@@ -11,12 +13,23 @@ class HttpError extends Error {
 }
 
 async function request<TResponse>(path: string, init?: RequestInit): Promise<TResponse> {
+	const token = getAuthToken()
+
 	const response = await fetch(`${API_BASE_URL}${path}`, {
 		...init,
-		headers: { 'Content-Type': 'application/json', ...init?.headers },
+		headers: {
+			'Content-Type': 'application/json',
+			...(token ? { Authorization: `Bearer ${token}` } : {}),
+			...init?.headers,
+		},
 	})
 
-	if (!response.ok) throw new HttpError(response.status, `${init?.method ?? 'GET'} ${path} failed`)
+	if (!response.ok) {
+		// A rejected session must drop the visitor back to the login page. Signing
+		// in is the one request allowed to 401 without clearing anything.
+		if (response.status === 401 && path !== '/login') handleUnauthorized()
+		throw new HttpError(response.status, `${init?.method ?? 'GET'} ${path} failed`)
+	}
 	if (response.status === 204) return undefined as TResponse
 
 	return (await response.json()) as TResponse

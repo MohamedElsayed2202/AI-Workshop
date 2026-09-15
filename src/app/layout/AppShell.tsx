@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { SessionMenu } from '@auth/components/SessionMenu'
 import { dashboardQueryOptions } from '@dashboard/queries'
 import { ThemeToggle } from '@shared/components/ui/ThemeToggle'
 import { cn } from '@shared/helpers/cn'
@@ -29,6 +30,7 @@ export function AppShell() {
 					<div className="ml-auto flex items-center gap-3">
 						{data ? <p className="hidden text-body text-muted sm:block">{data.meta.period} · all regions</p> : null}
 						<ThemeToggle />
+						<SessionMenu />
 					</div>
 				</div>
 			</header>

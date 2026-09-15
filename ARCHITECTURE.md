@@ -10,6 +10,7 @@ src/
   app/          composition root: providers, router, shell, configuration
   mocks/        the API seam — MSW handlers + the mock database
   shared/       cross-cutting UI primitives, helpers, hooks, store factory
+  auth/         login page, session store, route guard
   dashboard/    KPIs, revenue chart, accounts table, account detail
   users/        users CRUD
 ```
@@ -27,6 +28,7 @@ No component reads `public/data.json`. MSW serves it over HTTP:
 
 | Route | Purpose |
 | --- | --- |
+| `POST /api/login` | sign in — 401 on bad credentials |
 | `GET /api/dashboard` | meta, KPIs, revenue series, accounts |
 | `GET /api/users` | the user list |
 | `POST /api/users` | create — the server assigns `id`, `status: "Invited"`, `lastLoginAt: null` |
@@ -50,6 +52,7 @@ No component reads `public/data.json`. MSW serves it over HTTP:
 | Variable | Values | Default | Effect |
 | --- | --- | --- | --- |
 | `VITE_USER_FORM_PRESENTATION` | `dialog`, `drawer` | `dialog` | How the create/edit user form is presented |
+| `VITE_AUTH_ENABLED` | `false`, `true` | `false` | Whether the login gate is enforced |
 | `VITE_API_URL` | any base URL | `/api` | Where the HTTP client points |
 
 Read and validated in `src/app/config.ts`; anything unrecognised falls back to the
@@ -57,6 +60,19 @@ default. Individual call sites can still override — `<UserFormOverlay presenta
 
 `OverlayPanel` is the shared primitive behind both forms: MUI supplies behaviour
 (focus trap, Escape, portal, scroll lock) and Tailwind supplies every visual.
+
+## Authentication
+
+`RequireAuth` guards every app route; `/login` sits outside it. Credentials are checked
+by `POST /api/login` in `src/mocks/handlers/auth.ts` (workshop credentials: `root` /
+`root`) — the password exists only in that handler, never in a component. The returned
+session lives in a module-level Zustand store and is mirrored to `localStorage`, so it
+survives a reload. A guard redirect remembers the intended path, so signing in from a
+deep link lands back on that page.
+
+The gate is **off by default**. `tests/acceptance.spec.ts` loads `/` and expects the
+dashboard with no sign-in step, and that file must not be edited — so enforcing auth by
+default would fail the suite. Turn it on with `VITE_AUTH_ENABLED=true npm run dev`.
 
 ## Theming
 

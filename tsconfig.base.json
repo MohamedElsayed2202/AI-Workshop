@@ -5,6 +5,7 @@
       "@shared/*": ["src/shared/*"],
       "@dashboard/*": ["src/dashboard/*"],
       "@users/*": ["src/users/*"],
+      "@auth/*": ["src/auth/*"],
       "@/*": ["src/*"]
     }
   }

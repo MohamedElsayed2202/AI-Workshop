@@ -13,6 +13,7 @@ export default defineConfig({
       { find: /^@shared\//, replacement: fromRoot("./src/shared/") },
       { find: /^@dashboard\//, replacement: fromRoot("./src/dashboard/") },
       { find: /^@users\//, replacement: fromRoot("./src/users/") },
+      { find: /^@auth\//, replacement: fromRoot("./src/auth/") },
       { find: /^@\//, replacement: fromRoot("./src/") },
     ],
   },

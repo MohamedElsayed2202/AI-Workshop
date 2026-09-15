@@ -5,7 +5,8 @@ import { Select } from '@shared/components/ui/Select'
 import { OverlayPanel, type OverlayPresentation } from '@shared/components/ui/OverlayPanel'
 import { TextField } from '@shared/components/ui/TextField'
 import { FIELD_ORDER, USER_ROLES, userFormSchema, type UserFormValues } from '../schemas'
-import { findFirstErroredField, userToFormValues } from '../utils'
+import { findFirstErroredField } from '@shared/helpers/forms'
+import { userToFormValues } from '../utils'
 import type { User } from '@/types'
 
 interface UserFormViewProps {

@@ -1,8 +1,9 @@
 import { setupWorker } from 'msw/browser'
+import { authHandlers } from './handlers/auth'
 import { dashboardHandlers } from './handlers/dashboard'
 import { usersHandlers } from './handlers/users'
 
-export const worker = setupWorker(...dashboardHandlers, ...usersHandlers)
+export const worker = setupWorker(...authHandlers, ...dashboardHandlers, ...usersHandlers)
 
 /**
  * Started before the first render so no query can ever fire unmocked.
