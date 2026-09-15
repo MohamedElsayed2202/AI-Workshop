@@ -1,30 +1,74 @@
 # PulseBoard — architecture
 
-Two pages (Dashboard, Users) built as independent modules behind a mocked HTTP API.
-The guiding rule is that a requirement change should land in one file.
+Two pages (Dashboard, Users) behind a login, built as feature modules on top of an
+in-house design system. The guiding rule is that a requirement change should land
+in one file.
+
+## Zero UI frameworks
+
+There is no component library and no CSS framework. The dependency list is
+deliberately short: React, React Router, TanStack Query, Zustand, React Hook Form,
+Yup, ts-pattern, MSW, Recharts, and StyleX.
+
+- **Styling — StyleX.** Atomic, compile-time CSS. No `className` strings, no
+  utility framework, no runtime style engine.
+- **Charts — Recharts.** The one visual dependency, used for the revenue chart.
+- **Everything else is a native element.** Overlays are the platform `<dialog>`,
+  which brings its own focus trap, Escape handling, inert background and top-layer
+  stacking. Selects are real `<select>`s.
 
 ## Module map
 
 ```
 src/
-  app/          composition root: providers, router, shell, configuration
+  app/          composition root: providers, router, templates, configuration
   mocks/        the API seam — MSW handlers + the mock database
-  shared/       cross-cutting UI primitives, helpers, hooks, store factory
-  auth/         login page, session store, route guard
+  shared/       design tokens, the design system, helpers, hooks, store factory
+  auth/         login, session, route guard
   dashboard/    KPIs, revenue chart, accounts table, account detail
   users/        users CRUD
 ```
 
-Path aliases (`@shared/*`, `@dashboard/*`, `@users/*`, `@/*`) are declared once in
-`tsconfig.base.json` and mirrored in `vite.config.ts`.
+Path aliases (`@shared/*`, `@dashboard/*`, `@users/*`, `@auth/*`, `@/*`) are declared
+in `tsconfig.base.json` and mirrored in `vite.config.ts` — once for Vite's resolver
+and once for the StyleX compiler, which resolves token imports itself.
 
-A feature folder is `features/<feature>/{ui,hooks,utils.ts,schemas.ts}`: `ui/` holds
-markup only, `hooks/` holds React logic, and `utils.ts` / `schemas.ts` hold pure
-functions with no React import.
+## Atomic design, applied per module
+
+The taxonomy describes components; the modules describe ownership. They compose
+rather than compete.
+
+| Level | Where | Examples |
+| --- | --- | --- |
+| **Atoms** | `shared/design-system/atoms/` | `Button`, `TextField`, `Select`, `Badge`, `Avatar`, `HealthBar`, `VisuallyHidden` |
+| **Molecules** | `shared/design-system/molecules/` | `Card`, `FormField`, `Modal`, `ConfirmDialog`, `DataTable`, `SortableHeader`, `EmptyState`, `ThemeToggle` |
+| **Molecules (domain)** | `<module>/features/<feature>/molecules/` | `KpiCard`, `AccountRow`, `UserRow`, `AccountStatusBadge` |
+| **Organisms** | `<module>/features/<feature>/organisms/` | `KpiRow`, `RevenueChart`, `AccountsCard`, `AccountDetailDrawer`, `UsersTable`, `UserFormView`, `LoginForm` |
+| **Templates** | `app/templates/` | `AppShell`, `ThemeRoot` |
+| **Pages** | `<module>/pages/` | `DashboardPage`, `UsersPage`, `LoginPage` |
+
+An atom never imports another design-system component. A domain molecule maps domain
+meaning onto a generic atom — `AccountStatusBadge` decides that "At risk" is a `warn`
+tone, and `Badge` knows nothing about accounts.
+
+Logic stays out of all of them: pure functions live in `utils.ts` / `schemas.ts`, and
+React logic in `hooks/`. Components read props and a hook, and compute nothing.
+
+## Design tokens
+
+`shared/design/tokens.stylex.ts` defines every colour, space, radius, type size and
+shadow with `stylex.defineVars`. Each colour carries its own
+`@media (prefers-color-scheme: dark)` value, which covers visitors who never touch the
+toggle. `shared/design/themes.stylex.ts` adds explicit `lightTheme` / `darkTheme` via
+`stylex.createTheme`, applied by `ThemeRoot`, so the toggle overrides the system
+preference in both directions. `media.stylex.ts` holds the breakpoints as
+`stylex.defineConsts` — StyleX only inlines compile-time constants from `.stylex` files.
+
+A rebrand is a change to those three files.
 
 ## The API seam
 
-No component reads `public/data.json`. MSW serves it over HTTP:
+No component reads `public/data.json`. MSW serves it over HTTP.
 
 | Route | Purpose |
 | --- | --- |
@@ -43,9 +87,26 @@ No component reads `public/data.json`. MSW serves it over HTTP:
 
 - **TanStack Query** owns everything served over HTTP, users included. Mutations
   invalidate `['users']`, which is why edits survive navigating away and back.
-- **Zustand (+ Immer)** owns UI state only — which overlay is open and what it acts on.
-- Local component state owns the accounts filter and sort, behind
-  `useAccountsTable()`. Moving that into the URL with nuqs is a change to that one hook.
+- **Zustand (+ Immer)** owns UI state only — which overlay is open, the theme preference, and the session.
+- Local state owns the accounts filter and sort, behind `useAccountsTable()`.
+
+## Authentication
+
+`RequireAuth` guards every app route; `/login` sits outside it. Credentials are checked
+by `POST /api/login` in `src/mocks/handlers/auth.ts` (workshop credentials: `root` /
+`root`) — the password exists only in that handler. The session lives in a module-level
+Zustand store mirrored to `localStorage`, so it survives a reload, and a guard redirect
+remembers the intended path. Requests carry `Authorization: Bearer <token>`; a 401 from
+any other endpoint clears the session and returns the visitor to the login page.
+
+The gate is **on by default**. `tests/acceptance.spec.ts` loads `/` and expects the
+dashboard with no sign-in step, and that file must not be edited, so the suite must run
+with the gate off:
+
+```bash
+VITE_AUTH_ENABLED=false npm test     # 13/13
+npm test                             # fails: the suite never signs in
+```
 
 ## Configuration
 
@@ -56,44 +117,20 @@ No component reads `public/data.json`. MSW serves it over HTTP:
 | `VITE_API_URL` | any base URL | `/api` | Where the HTTP client points |
 
 Read and validated in `src/app/config.ts`; anything unrecognised falls back to the
-default. Individual call sites can still override — `<UserFormOverlay presentation="drawer" />`.
-
-`OverlayPanel` is the shared primitive behind both forms: MUI supplies behaviour
-(focus trap, Escape, portal, scroll lock) and Tailwind supplies every visual.
-
-## Authentication
-
-`RequireAuth` guards every app route; `/login` sits outside it. Credentials are checked
-by `POST /api/login` in `src/mocks/handlers/auth.ts` (workshop credentials: `root` /
-`root`) — the password exists only in that handler, never in a component. The returned
-session lives in a module-level Zustand store and is mirrored to `localStorage`, so it
-survives a reload. A guard redirect remembers the intended path, so signing in from a
-deep link lands back on that page.
-
-The gate is **on by default**: an unauthenticated visitor is redirected to `/login` from
-any route, and the intended path is restored after signing in. Requests carry
-`Authorization: Bearer <token>`, and a 401 from any endpoint other than `/login` clears
-the session, which re-renders the guard and returns the visitor to the login page.
-
-`tests/acceptance.spec.ts` loads `/` and expects the dashboard with no sign-in step, and
-that file must not be edited — so **the acceptance suite must be run with the gate off**:
-
-```bash
-VITE_AUTH_ENABLED=false npm test     # 13/13
-npm test                             # fails: the suite never signs in
-```
-
-## Theming
-
-All colour lives in `src/index.css` as CSS custom properties, mapped into Tailwind in
-`tailwind.config.ts`. The light palette sits on bare `:root`; the dark palette is applied
-both for `prefers-color-scheme: dark` and for an explicit `data-theme="dark"`, so the
-header toggle wins in either direction. A rebrand is a one-file change.
+default. Call sites can still override — `<UserFormOverlay presentation="drawer" />`.
 
 ## Responsive
 
 One navigation that reflows — never a second, CSS-hidden mobile copy, which would break
 Playwright's strict-mode uniqueness on `nav-users` / `nav-dashboard`. KPI cards go 4-up →
-2×2. Both tables sit in their own `overflow-x-auto` container so the page body never
-scrolls sideways. The revenue chart measures its container and draws at 1:1, so its labels
-stay legible at 375 px rather than scaling down with a fixed `viewBox`.
+2×2. Both tables sit in a `DataTable` with its own `overflow-x-auto` container so the page
+body never scrolls sideways; `VisuallyHidden` is `position: relative` for the same reason.
+The revenue chart measures its container and picks a height and type size per breakpoint.
+
+## A note on native `<dialog>`
+
+The effect that opens a dialog returns a cleanup that closes it. The native `close`
+event is deliberately **not** wired to the caller's `onClose`: under StrictMode the
+effect runs mount → cleanup → mount, and that cleanup's `close()` would otherwise
+dismiss the dialog the instant it opened. Escape is handled through `onCancel`, and a
+backdrop click by comparing `event.target` to the dialog element.
