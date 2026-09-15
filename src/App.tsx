@@ -2,8 +2,8 @@
  * PulseBoard — starter shell.
  *
  * This is intentionally almost empty. Your job during the sprint is to turn
- * this into the dashboard described in SPEC.md, using the design in /design
- * and the data in /public/data.json.
+ * this into the dashboard and the Users CRUD page described in SPEC.md, using
+ * the design in /design and the data in /public/data.json.
  *
  * Run `npm test` at any time to see how far you are from passing acceptance.
  */

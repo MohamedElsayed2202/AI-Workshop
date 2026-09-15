@@ -36,10 +36,10 @@ claude                         # inside Claude: /mcp should list "playwright"
 ## Layout
 
 ```
-public/data.json      the dataset (KPIs, 12-month revenue series, 24 accounts)
+public/data.json      the dataset (KPIs, 12-month revenue series, 24 accounts, 10 users)
 src/types.ts          TypeScript types for the dataset
 src/App.tsx           the (empty) app shell — start here
-design/               reference design at 1280×800 and 375×812
+design/               reference designs: dashboard and users page, desktop and mobile
 tests/acceptance.spec.ts   acceptance test (do not edit; judges run it as-is)
 tests/screenshot.spec.ts   screenshot helper
 ```

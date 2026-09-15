@@ -46,4 +46,20 @@ export interface DashboardData {
   kpis: Kpi[];
   revenueSeries: RevenuePoint[];
   accounts: Account[];
+  users: User[];
+}
+
+export type UserRole = "Admin" | "Manager" | "Viewer";
+export type UserStatus = "Active" | "Invited" | "Suspended";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  team: string;
+  status: UserStatus;
+  createdAt: string;
+  /** null until the user has logged in for the first time. */
+  lastLoginAt: string | null;
 }

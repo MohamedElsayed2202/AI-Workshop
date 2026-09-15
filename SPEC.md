@@ -9,7 +9,11 @@ acceptance test (`npm test`). Constraint cards will be announced during the spri
 
 ## What to build
 
-One page, four regions, top to bottom:
+Two pages behind a simple top navigation: **Dashboard** and **Users**. No router is
+required; client-side state is fine, but changes made on the Users page must survive
+navigating to the Dashboard and back.
+
+### Dashboard — four regions, top to bottom
 
 1. **KPI header row** — four cards, one per entry in `kpis`. Show the label, the
    formatted value, and the change versus last period with a direction indicator.
@@ -23,6 +27,24 @@ One page, four regions, top to bottom:
 4. **Detail drawer** — clicking a row slides in a panel with the full account record
    (name, plan, region, owner + email, MRR, seats, status, health, signed up, last
    active, notes). Close with a button or the Escape key.
+
+### Users — a CRUD page
+
+A table of every entry in `users` (Name, Email, Role, Team, Status, Last login) and the
+four operations:
+
+- **Create** — a "New user" button opens a form (drawer or modal) with Name, Email, Role
+  (Admin / Manager / Viewer) and Team. Saving adds the row; new users start as
+  `Invited` with no last login.
+- **Read** — every row shows the user's data; clicking Edit on a row opens the same form
+  pre-filled.
+- **Update** — saving the edit form updates the row in place.
+- **Delete** — a Delete control on each row asks for confirmation inside the app (not
+  `window.confirm`) and then removes the row.
+
+Validation: Name is required, Email must look like an email, and both must be shown as an
+inline error without saving. Persistence is in memory for the sprint; `localStorage` is a
+bonus, not a requirement.
 
 Formatting: currency as `$85,370` (no cents), percents as `3.2%`, deltas as `+5.5%` /
 `-0.4%`. Dates may be displayed however you like.
@@ -44,6 +66,24 @@ The test in `tests/acceptance.spec.ts` looks for these hooks. Names are exact.
 | `data-testid="table-empty"` | empty-state element | visible only when the filter matches nothing |
 | `data-testid="detail-drawer"` | the drawer | `role="dialog"`; contains account name, owner email, and notes |
 | `data-testid="drawer-close"` | the close button inside the drawer | Escape must also close it |
+
+### Users page hooks
+
+| Hook | Where | Notes |
+| --- | --- | --- |
+| `data-testid="nav-users"` / `data-testid="nav-dashboard"` | top navigation links | |
+| `data-testid="users-page"` | the Users page wrapper | visible only on the Users page |
+| `data-testid="users-table"` | the users `<table>` | rows live in `<tbody>` |
+| `data-testid="user-row"` + `data-user-id="usr-001"` | each `<tbody><tr>` | row text includes name, email and role |
+| `data-testid="user-create"` | the "New user" button | |
+| `data-testid="user-form"` | the create/edit form (`<form>`) | inputs named `name`, `email`, `team`; a `<select name="role">` |
+| `data-testid="user-save"` | the form's submit button | |
+| `data-testid="user-cancel"` | closes the form without saving | |
+| `data-testid="form-error"` | inline validation message | visible only when validation fails |
+| `data-testid="user-edit"` | Edit control inside each row | |
+| `data-testid="user-delete"` | Delete control inside each row | |
+| `data-testid="confirm-delete"` | the confirmation dialog (`role="dialog"`) | |
+| `data-testid="confirm-yes"` / `data-testid="confirm-no"` | its buttons | |
 
 Also: the page `<title>` and `<h1>` both contain "PulseBoard", and loading the page
 produces no `console.error` output.

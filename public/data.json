@@ -462,5 +462,107 @@
       "lastActiveAt": "2026-07-30",
       "notes": "Payment failed twice in July. Finance contact unresponsive."
     }
+  ],
+  "users": [
+    {
+      "id": "usr-001",
+      "name": "Priya Raman",
+      "email": "priya.raman@pulseboard.dev",
+      "role": "Admin",
+      "team": "Customer Success",
+      "status": "Active",
+      "createdAt": "2023-04-03",
+      "lastLoginAt": "2026-08-31T09:12:00Z"
+    },
+    {
+      "id": "usr-002",
+      "name": "Diego Alvarez",
+      "email": "diego.alvarez@pulseboard.dev",
+      "role": "Manager",
+      "team": "Sales",
+      "status": "Active",
+      "createdAt": "2024-01-15",
+      "lastLoginAt": "2026-08-31T08:40:00Z"
+    },
+    {
+      "id": "usr-003",
+      "name": "Sofia Lindqvist",
+      "email": "sofia.lindqvist@pulseboard.dev",
+      "role": "Manager",
+      "team": "Sales",
+      "status": "Active",
+      "createdAt": "2023-09-11",
+      "lastLoginAt": "2026-08-30T16:05:00Z"
+    },
+    {
+      "id": "usr-004",
+      "name": "Kenji Watanabe",
+      "email": "kenji.watanabe@pulseboard.dev",
+      "role": "Manager",
+      "team": "Sales",
+      "status": "Active",
+      "createdAt": "2024-02-20",
+      "lastLoginAt": "2026-08-31T02:22:00Z"
+    },
+    {
+      "id": "usr-005",
+      "name": "Camila Torres",
+      "email": "camila.torres@pulseboard.dev",
+      "role": "Manager",
+      "team": "Sales",
+      "status": "Active",
+      "createdAt": "2024-06-05",
+      "lastLoginAt": "2026-08-29T19:48:00Z"
+    },
+    {
+      "id": "usr-006",
+      "name": "Amara Okafor",
+      "email": "amara.okafor@pulseboard.dev",
+      "role": "Viewer",
+      "team": "Finance",
+      "status": "Active",
+      "createdAt": "2025-03-18",
+      "lastLoginAt": "2026-08-28T11:30:00Z"
+    },
+    {
+      "id": "usr-007",
+      "name": "Liam O'Brien",
+      "email": "liam.obrien@pulseboard.dev",
+      "role": "Viewer",
+      "team": "Marketing",
+      "status": "Invited",
+      "createdAt": "2026-08-27",
+      "lastLoginAt": null
+    },
+    {
+      "id": "usr-008",
+      "name": "Mei Chen",
+      "email": "mei.chen@pulseboard.dev",
+      "role": "Admin",
+      "team": "Engineering",
+      "status": "Active",
+      "createdAt": "2023-02-01",
+      "lastLoginAt": "2026-08-31T07:55:00Z"
+    },
+    {
+      "id": "usr-009",
+      "name": "Tomás Ferreira",
+      "email": "tomas.ferreira@pulseboard.dev",
+      "role": "Viewer",
+      "team": "Support",
+      "status": "Suspended",
+      "createdAt": "2025-01-09",
+      "lastLoginAt": "2026-06-14T13:10:00Z"
+    },
+    {
+      "id": "usr-010",
+      "name": "Hannah Weiss",
+      "email": "hannah.weiss@pulseboard.dev",
+      "role": "Manager",
+      "team": "Customer Success",
+      "status": "Invited",
+      "createdAt": "2026-08-30",
+      "lastLoginAt": null
+    }
   ]
 }

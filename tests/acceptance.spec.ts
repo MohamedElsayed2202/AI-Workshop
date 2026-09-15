@@ -123,3 +123,120 @@ test.describe("PulseBoard acceptance", () => {
     await expect(drawer).toBeHidden();
   });
 });
+
+test.describe("Users page (CRUD)", () => {
+  async function gotoUsers(page: Page) {
+    await open(page);
+    await page.getByTestId("nav-users").click();
+    await expect(page.getByTestId("users-page")).toBeVisible();
+    return page.getByTestId("users-table").locator("tbody").getByTestId("user-row");
+  }
+
+  test("lists every user with name, email and role", async ({ page }) => {
+    const rows = await gotoUsers(page);
+    await expect(rows).toHaveCount(data.users.length);
+    for (const u of data.users.slice(0, 3)) {
+      const row = page.locator(`[data-user-id="${u.id}"]`);
+      await expect(row).toContainText(u.name);
+      await expect(row).toContainText(u.email);
+      await expect(row).toContainText(u.role);
+    }
+  });
+
+  test("create validates input, then adds a row", async ({ page }) => {
+    const rows = await gotoUsers(page);
+    await page.getByTestId("user-create").click();
+    const form = page.getByTestId("user-form");
+    await expect(form).toBeVisible();
+
+    // empty name → error, nothing saved
+    await form.locator('[name="email"]').fill("new.person@pulseboard.dev");
+    await page.getByTestId("user-save").click();
+    await expect(page.getByTestId("form-error")).toBeVisible();
+    await expect(rows).toHaveCount(data.users.length);
+
+    // bad email → error, nothing saved
+    await form.locator('[name="name"]').fill("Nadia Haddad");
+    await form.locator('[name="email"]').fill("not-an-email");
+    await page.getByTestId("user-save").click();
+    await expect(page.getByTestId("form-error")).toBeVisible();
+    await expect(rows).toHaveCount(data.users.length);
+
+    // valid → saved
+    await form.locator('[name="email"]').fill("nadia.haddad@pulseboard.dev");
+    await form.locator('[name="team"]').fill("Marketing");
+    await form.locator('select[name="role"]').selectOption("Viewer");
+    await page.getByTestId("user-save").click();
+    await expect(form).toBeHidden();
+    await expect(rows).toHaveCount(data.users.length + 1);
+    const created = rows.filter({ hasText: "nadia.haddad@pulseboard.dev" });
+    await expect(created).toHaveCount(1);
+    await expect(created).toContainText("Nadia Haddad");
+    await expect(created).toContainText("Viewer");
+    await expect(created).toContainText("Invited");
+  });
+
+  test("edit opens the form pre-filled and updates the row in place", async ({ page }) => {
+    const rows = await gotoUsers(page);
+    const target = data.users.find((u) => u.id === "usr-006")!;
+    const row = page.locator(`[data-user-id="${target.id}"]`);
+    await row.getByTestId("user-edit").click();
+    const form = page.getByTestId("user-form");
+    await expect(form.locator('[name="name"]')).toHaveValue(target.name);
+    await expect(form.locator('[name="email"]')).toHaveValue(target.email);
+    await expect(form.locator('select[name="role"]')).toHaveValue(target.role);
+
+    await form.locator('[name="name"]').fill("Amara Okafor-Bello");
+    await form.locator('select[name="role"]').selectOption("Manager");
+    await page.getByTestId("user-save").click();
+    await expect(form).toBeHidden();
+    await expect(rows).toHaveCount(data.users.length);
+    await expect(row).toContainText("Amara Okafor-Bello");
+    await expect(row).toContainText("Manager");
+    await expect(row).toContainText(target.email);
+  });
+
+  test("cancel discards changes", async ({ page }) => {
+    await gotoUsers(page);
+    const row = page.locator('[data-user-id="usr-002"]');
+    await row.getByTestId("user-edit").click();
+    await page.getByTestId("user-form").locator('[name="name"]').fill("Should Not Save");
+    await page.getByTestId("user-cancel").click();
+    await expect(page.getByTestId("user-form")).toBeHidden();
+    await expect(row).toContainText("Diego Alvarez");
+    await expect(row).not.toContainText("Should Not Save");
+  });
+
+  test("delete asks for confirmation, then removes the row", async ({ page }) => {
+    const rows = await gotoUsers(page);
+    const row = page.locator('[data-user-id="usr-009"]');
+
+    await row.getByTestId("user-delete").click();
+    const dialog = page.getByTestId("confirm-delete");
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toHaveAttribute("role", "dialog");
+    await page.getByTestId("confirm-no").click();
+    await expect(dialog).toBeHidden();
+    await expect(rows).toHaveCount(data.users.length);
+
+    await row.getByTestId("user-delete").click();
+    await page.getByTestId("confirm-yes").click();
+    await expect(dialog).toBeHidden();
+    await expect(row).toHaveCount(0);
+    await expect(rows).toHaveCount(data.users.length - 1);
+  });
+
+  test("changes survive navigating to the dashboard and back", async ({ page }) => {
+    const rows = await gotoUsers(page);
+    await page.locator('[data-user-id="usr-007"]').getByTestId("user-delete").click();
+    await page.getByTestId("confirm-yes").click();
+    await expect(rows).toHaveCount(data.users.length - 1);
+
+    await page.getByTestId("nav-dashboard").click();
+    await expect(page.getByTestId("accounts-table")).toBeVisible();
+    await page.getByTestId("nav-users").click();
+    await expect(page.getByTestId("users-page")).toBeVisible();
+    await expect(rows).toHaveCount(data.users.length - 1);
+    await expect(page.locator('[data-user-id="usr-007"]')).toHaveCount(0);
+  });
+});
