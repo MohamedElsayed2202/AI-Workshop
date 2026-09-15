@@ -1,9 +1,9 @@
 import { Route, Routes } from 'react-router-dom'
-import { AppShell } from '@/app/layout/AppShell'
+import { AppShell } from '@/app/templates/AppShell'
 import { RequireAuth } from '@auth/components/RequireAuth'
-import { LoginPage } from '@auth/ui/LoginPage'
-import { DashboardPage } from '@dashboard/ui/DashboardPage'
-import { UsersPage } from '@users/ui/UsersPage'
+import { LoginPage } from '@auth/pages/LoginPage'
+import { DashboardPage } from '@dashboard/pages/DashboardPage'
+import { UsersPage } from '@users/pages/UsersPage'
 
 export function AppRoutes() {
 	return (

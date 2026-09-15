@@ -1,4 +1,4 @@
-import type { OverlayPresentation } from '@shared/components/ui/OverlayPanel'
+import type { OverlayPresentation } from '@shared/design-system/molecules/Modal'
 
 const PRESENTATIONS: readonly OverlayPresentation[] = ['drawer', 'dialog']
 
