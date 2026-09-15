@@ -2,13 +2,14 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import { Button } from '@shared/components/ui/Button'
 import { Select } from '@shared/components/ui/Select'
-import { SidePanel } from '@shared/components/ui/SidePanel'
+import { OverlayPanel, type OverlayPresentation } from '@shared/components/ui/OverlayPanel'
 import { TextField } from '@shared/components/ui/TextField'
 import { FIELD_ORDER, USER_ROLES, userFormSchema, type UserFormValues } from '../schemas'
 import { findFirstErroredField, userToFormValues } from '../utils'
 import type { User } from '@/types'
 
-interface UserFormDrawerViewProps {
+interface UserFormViewProps {
+	presentation: OverlayPresentation
 	user: User | null
 	isSaving: boolean
 	onSubmit: (values: UserFormValues) => void
@@ -16,7 +17,7 @@ interface UserFormDrawerViewProps {
 }
 
 /** Owns the form. No data hooks live here — the container passes everything in. */
-export function UserFormDrawerView({ user, isSaving, onSubmit, onClose }: UserFormDrawerViewProps) {
+export function UserFormView({ presentation, user, isSaving, onSubmit, onClose }: UserFormViewProps) {
 	const {
 		control,
 		handleSubmit,
@@ -35,9 +36,11 @@ export function UserFormDrawerView({ user, isSaving, onSubmit, onClose }: UserFo
 	})
 
 	return (
-		<SidePanel
+		<OverlayPanel
+			presentation={presentation}
 			testId="user-form-panel"
-			eyebrow={user ? 'Edit user' : 'New user'}
+			closeTestId="user-form-close"
+			eyebrow={user ? 'Edit user' : 'Add user'}
 			title={user ? user.name : 'New user'}
 			onClose={onClose}
 		>
@@ -95,7 +98,7 @@ export function UserFormDrawerView({ user, isSaving, onSubmit, onClose }: UserFo
 					</Button>
 				</div>
 			</form>
-		</SidePanel>
+		</OverlayPanel>
 	)
 }
 

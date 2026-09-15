@@ -28,7 +28,7 @@ export function AccountsCard({ accounts, selectedAccountId, onSelectAccount }: A
 				/>
 			</CardHeader>
 
-			<div className="mt-4 overflow-x-auto px-4 pb-4 sm:px-5 sm:pb-5">
+			<div className="mt-4 min-w-0 max-w-full overflow-x-auto px-4 pb-4 sm:px-5 sm:pb-5">
 				<table data-testid="accounts-table" className="w-full min-w-[820px] border-collapse text-body">
 					<thead>
 						<tr className="text-muted">

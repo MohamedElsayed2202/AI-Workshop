@@ -14,7 +14,7 @@ export function DashboardPage() {
 	if (isPending || !data) return <p className="py-10 text-center text-body text-muted">Loading dashboard…</p>
 
 	return (
-		<div className="flex flex-col gap-4 sm:gap-5">
+		<div className="flex min-w-0 flex-col gap-4 sm:gap-5">
 			<KpiRow kpis={data.kpis} />
 			<RevenueChart series={data.revenueSeries} />
 			<AccountsCard

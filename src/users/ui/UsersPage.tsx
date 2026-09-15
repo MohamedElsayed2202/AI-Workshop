@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from '@shared/components/ui/Card'
 import { usersQueryOptions } from '@users/queries'
 import { useUsersUiStore } from '@users/stores/usersUiStore'
 import { DeleteUserDialog } from '@users/features/user-delete/ui/DeleteUserDialog'
-import { UserFormDrawer } from '@users/features/user-form/ui/UserFormDrawer'
+import { UserFormOverlay } from '@users/features/user-form/ui/UserFormOverlay'
 import { UsersTable } from '@users/features/user-list/ui/UsersTable'
 
 export function UsersPage() {
@@ -13,7 +13,7 @@ export function UsersPage() {
 		useUsersUiStore()
 
 	return (
-		<div data-testid="users-page" className="flex flex-col gap-4 sm:gap-5">
+		<div data-testid="users-page" className="flex min-w-0 flex-col gap-4 sm:gap-5">
 			<Card>
 				<CardHeader className="sm:items-center">
 					<CardTitle title="Users" subtitle={`${users?.length ?? 0} people`} />
@@ -29,7 +29,7 @@ export function UsersPage() {
 				)}
 			</Card>
 
-			{isFormOpen ? <UserFormDrawer user={editingUser} onClose={closeForm} /> : null}
+			{isFormOpen ? <UserFormOverlay user={editingUser} onClose={closeForm} /> : null}
 			{userPendingDeletion ? <DeleteUserDialog user={userPendingDeletion} onClose={cancelDeletion} /> : null}
 		</div>
 	)

@@ -1,11 +1,24 @@
+import { appConfig } from '@/app/config'
 import { useCreateUser, useUpdateUser } from '@users/queries'
 import { formValuesToPayload } from '../utils'
-import { UserFormDrawerView } from './UserFormDrawerView'
+import { UserFormView } from './UserFormView'
+import type { OverlayPresentation } from '@shared/components/ui/OverlayPanel'
 import type { UserFormValues } from '../schemas'
 import type { User } from '@/types'
 
+interface UserFormOverlayProps {
+	user: User | null
+	onClose: () => void
+	/** Overrides the configured default, which is a dialog. */
+	presentation?: OverlayPresentation
+}
+
 /** Container: owns the mutations, hands the view plain props. */
-export function UserFormDrawer({ user, onClose }: { user: User | null; onClose: () => void }) {
+export function UserFormOverlay({
+	user,
+	onClose,
+	presentation = appConfig.userFormPresentation,
+}: UserFormOverlayProps) {
 	const createUser = useCreateUser()
 	const updateUser = useUpdateUser()
 
@@ -20,7 +33,8 @@ export function UserFormDrawer({ user, onClose }: { user: User | null; onClose: 
 	}
 
 	return (
-		<UserFormDrawerView
+		<UserFormView
+			presentation={presentation}
 			user={user}
 			isSaving={createUser.isPending || updateUser.isPending}
 			onSubmit={handleSubmit}

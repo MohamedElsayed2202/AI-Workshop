@@ -1,13 +1,13 @@
 import { AccountStatusBadge } from '@shared/components/ui/Badge'
 import { HealthBar } from '@shared/components/ui/HealthBar'
-import { SidePanel } from '@shared/components/ui/SidePanel'
+import { OverlayPanel } from '@shared/components/ui/OverlayPanel'
 import { formatCurrency, formatDate } from '@shared/helpers/format'
 import type { Account } from '@/types'
 import type { ReactNode } from 'react'
 
 export function AccountDetailDrawer({ account, onClose }: { account: Account; onClose: () => void }) {
 	return (
-		<SidePanel testId="detail-drawer" eyebrow="Account" title={account.name} onClose={onClose}>
+		<OverlayPanel testId="detail-drawer" eyebrow="Account" title={account.name} onClose={onClose}>
 			<dl className="grid grid-cols-2 gap-x-6 gap-y-5">
 				<Field label="Plan">{account.plan}</Field>
 				<Field label="Region">{account.region}</Field>
@@ -31,7 +31,7 @@ export function AccountDetailDrawer({ account, onClose }: { account: Account; on
 					<span className="block leading-relaxed">{account.notes}</span>
 				</Field>
 			</dl>
-		</SidePanel>
+		</OverlayPanel>
 	)
 }
 
