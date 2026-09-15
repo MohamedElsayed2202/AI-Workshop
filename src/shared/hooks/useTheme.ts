@@ -1,53 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
+import { selectIsDark, useThemeStore } from '@shared/stores/themeStore'
 
-export type ThemePreference = 'light' | 'dark' | 'system'
-
-const STORAGE_KEY = 'pulseboard.theme'
-
-function readStoredPreference(): ThemePreference {
-	try {
-		const stored = window.localStorage.getItem(STORAGE_KEY)
-		return stored === 'light' || stored === 'dark' ? stored : 'system'
-	} catch {
-		return 'system'
-	}
-}
+export type { ThemePreference } from '@shared/stores/themeStore'
 
 /**
- * Stamps the explicit choice on <html> as data-theme. "system" stamps nothing,
- * leaving prefers-color-scheme in charge — which is what index.css expects.
+ * The current theme. Every consumer reads the same shared store, so the toggle
+ * and the ThemeRoot that applies the colours can never disagree.
  */
 export function useTheme() {
-	const [preference, setPreference] = useState<ThemePreference>(readStoredPreference)
-
-	useEffect(() => {
-		const root = document.documentElement
-		if (preference === 'system') {
-			root.removeAttribute('data-theme')
-		} else {
-			root.setAttribute('data-theme', preference)
-		}
-
-		try {
-			if (preference === 'system') window.localStorage.removeItem(STORAGE_KEY)
-			else window.localStorage.setItem(STORAGE_KEY, preference)
-		} catch {
-			// Remembering the choice is a convenience, not a requirement.
-		}
-	}, [preference])
-
-	const isDark =
-		preference === 'dark' ||
-		(preference === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-
-	const toggleTheme = useCallback(() => {
-		setPreference((current) => {
-			const nowDark =
-				current === 'dark' ||
-				(current === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-			return nowDark ? 'light' : 'dark'
-		})
-	}, [])
+	const preference = useThemeStore((state) => state.preference)
+	const isDark = useThemeStore(selectIsDark)
+	const toggleTheme = useThemeStore((state) => state.toggleTheme)
 
 	return { preference, isDark, toggleTheme }
 }

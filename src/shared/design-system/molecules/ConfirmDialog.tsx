@@ -43,11 +43,15 @@ export function ConfirmDialog({
 			data-testid={testId}
 			role="dialog"
 			aria-label={title}
+			// The native `close` event stays unwired: the effect cleanup calls close(),
+			// which under StrictMode would dismiss the dialog as soon as it opened.
 			onCancel={(event) => {
 				event.preventDefault()
 				onCancel()
 			}}
-			onClose={onCancel}
+			onClick={(event) => {
+				if (event.target === dialogRef.current) onCancel()
+			}}
 			{...stylex.props(styles.dialog)}
 		>
 			<div {...stylex.props(styles.body)}>
