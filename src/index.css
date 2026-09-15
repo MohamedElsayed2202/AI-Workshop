@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Design tokens, read off design/*.png. Every colour in the app resolves to one
+ * of these, so a rebrand — or the dark palette — touches this file only.
+ *
+ * The light palette lives on bare :root, so no colour is defined solely inside a
+ * media query. The dark palette is then applied twice: once for the system
+ * preference (unless the viewer explicitly chose light) and once for an explicit
+ * dark choice, so the toggle wins in both directions.
+ */
+:root {
+	color-scheme: light;
+
+	--pb-brand: #4f46e5;
+	--pb-brand-soft: #a5b4fc;
+	--pb-brand-tint: #eef2ff;
+	--pb-on-brand: #ffffff;
+	--pb-page: #f1f3f7;
+	--pb-surface: #ffffff;
+	--pb-line: #e6e8ee;
+	--pb-ink: #111827;
+	--pb-muted: #6b7280;
+	--pb-positive: #16a34a;
+	--pb-danger: #dc2626;
+	--pb-warn: #d97706;
+	--pb-target: #d97706;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+
+		--pb-brand: #818cf8;
+		--pb-brand-soft: #4c51bf;
+		--pb-brand-tint: #272a4d;
+		--pb-on-brand: #0e1117;
+		--pb-page: #0e1117;
+		--pb-surface: #171b23;
+		--pb-line: #272c37;
+		--pb-ink: #eef1f7;
+		--pb-muted: #98a1b3;
+		--pb-positive: #4ade80;
+		--pb-danger: #f87171;
+		--pb-warn: #fbbf24;
+		--pb-target: #fbbf24;
+	}
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+
+	--pb-brand: #818cf8;
+	--pb-brand-soft: #4c51bf;
+	--pb-brand-tint: #272a4d;
+	--pb-on-brand: #0e1117;
+	--pb-page: #0e1117;
+	--pb-surface: #171b23;
+	--pb-line: #272c37;
+	--pb-ink: #eef1f7;
+	--pb-muted: #98a1b3;
+	--pb-positive: #4ade80;
+	--pb-danger: #f87171;
+	--pb-warn: #fbbf24;
+	--pb-target: #fbbf24;
+}
+
+html,
+body,
+#root {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--pb-page);
+	color: var(--pb-ink);
+	font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
