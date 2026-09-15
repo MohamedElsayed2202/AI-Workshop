@@ -18,12 +18,13 @@ function readBoolean(value: string | undefined, fallback: boolean): boolean {
  * falls back to the documented default.
  *
  * VITE_USER_FORM_PRESENTATION: "dialog" (default) | "drawer"
- * VITE_AUTH_ENABLED:           "false" (default) | "true"
+ * VITE_AUTH_ENABLED:           "true" (default) | "false"
  *
- * The auth gate defaults to off because tests/acceptance.spec.ts loads "/" and
- * expects the dashboard with no sign-in step, and that file must not be edited.
+ * The auth gate is on by default: an unauthenticated visitor is redirected to
+ * /login. Note that tests/acceptance.spec.ts loads "/" and expects the dashboard
+ * with no sign-in step, so that suite must be run with VITE_AUTH_ENABLED=false.
  */
 export const appConfig = {
 	userFormPresentation: readPresentation(import.meta.env.VITE_USER_FORM_PRESENTATION, 'dialog'),
-	authEnabled: readBoolean(import.meta.env.VITE_AUTH_ENABLED, false),
+	authEnabled: readBoolean(import.meta.env.VITE_AUTH_ENABLED, true),
 } as const

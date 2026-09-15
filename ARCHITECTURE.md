@@ -52,7 +52,7 @@ No component reads `public/data.json`. MSW serves it over HTTP:
 | Variable | Values | Default | Effect |
 | --- | --- | --- | --- |
 | `VITE_USER_FORM_PRESENTATION` | `dialog`, `drawer` | `dialog` | How the create/edit user form is presented |
-| `VITE_AUTH_ENABLED` | `false`, `true` | `false` | Whether the login gate is enforced |
+| `VITE_AUTH_ENABLED` | `true`, `false` | `true` | Whether the login gate is enforced |
 | `VITE_API_URL` | any base URL | `/api` | Where the HTTP client points |
 
 Read and validated in `src/app/config.ts`; anything unrecognised falls back to the
@@ -70,9 +70,18 @@ session lives in a module-level Zustand store and is mirrored to `localStorage`,
 survives a reload. A guard redirect remembers the intended path, so signing in from a
 deep link lands back on that page.
 
-The gate is **off by default**. `tests/acceptance.spec.ts` loads `/` and expects the
-dashboard with no sign-in step, and that file must not be edited — so enforcing auth by
-default would fail the suite. Turn it on with `VITE_AUTH_ENABLED=true npm run dev`.
+The gate is **on by default**: an unauthenticated visitor is redirected to `/login` from
+any route, and the intended path is restored after signing in. Requests carry
+`Authorization: Bearer <token>`, and a 401 from any endpoint other than `/login` clears
+the session, which re-renders the guard and returns the visitor to the login page.
+
+`tests/acceptance.spec.ts` loads `/` and expects the dashboard with no sign-in step, and
+that file must not be edited — so **the acceptance suite must be run with the gate off**:
+
+```bash
+VITE_AUTH_ENABLED=false npm test     # 13/13
+npm test                             # fails: the suite never signs in
+```
 
 ## Theming
 

@@ -1,22 +1,25 @@
 import { useRef } from 'react'
+import { Bar, CartesianGrid, Cell, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Card, CardHeader, CardTitle } from '@shared/components/ui/Card'
 import { useElementWidth } from '@shared/hooks/useElementWidth'
-import { formatMonthLabel } from '@shared/helpers/format'
-import { buildChartGeometry, toPolyline } from '../utils'
+import { formatCurrency, formatMonthLabel } from '@shared/helpers/format'
+import { buildAxisTicks, formatAxisTick, getAxisMaximum } from '../utils'
 import type { RevenuePoint } from '@/types'
 
 /** Breakpoints mirror the Tailwind scale; the chart shrinks in height, not in type size. */
 function getChartLayout(width: number) {
-	if (width < 600) return { height: 190, fontSize: 9, padding: { top: 12, right: 6, bottom: 22, left: 34 } }
-	if (width < 1280) return { height: 260, fontSize: 11, padding: { top: 14, right: 10, bottom: 26, left: 46 } }
-	return { height: 300, fontSize: 12, padding: { top: 16, right: 12, bottom: 30, left: 54 } }
+	if (width < 600) return { height: 190, fontSize: 9, axisWidth: 34, axisHeight: 22, margin: { top: 12, right: 6 } }
+	if (width < 1280) return { height: 260, fontSize: 11, axisWidth: 46, axisHeight: 26, margin: { top: 14, right: 10 } }
+	return { height: 300, fontSize: 12, axisWidth: 54, axisHeight: 30, margin: { top: 16, right: 12 } }
 }
 
 export function RevenueChart({ series }: { series: RevenuePoint[] }) {
 	const containerRef = useRef<HTMLDivElement>(null)
 	const width = useElementWidth(containerRef)
-	const { height, fontSize, padding } = getChartLayout(width)
-	const { bars, targetPoints, ticks, plot } = buildChartGeometry(series, { width, height }, padding)
+	const { height, fontSize, axisWidth, axisHeight, margin } = getChartLayout(width)
+
+	const maximum = getAxisMaximum(series)
+	const tickStyle = { fontSize, fill: 'var(--pb-muted)' }
 
 	const first = series.at(0)
 	const last = series.at(-1)
@@ -43,60 +46,49 @@ export function RevenueChart({ series }: { series: RevenuePoint[] }) {
 				</ul>
 
 				<div ref={containerRef} data-testid="revenue-chart" className="mt-2 w-full">
-					<svg role="img" aria-label={accessibleName} width={width} height={height} className="block">
-						{ticks.map((tick) => (
-							<g key={tick.value}>
-								<line x1={plot.left} x2={plot.right} y1={tick.y} y2={tick.y} stroke="var(--pb-line)" strokeWidth={1} />
-								<text
-									x={plot.left - 8}
-									y={tick.y + fontSize / 3}
-									textAnchor="end"
-									fontSize={fontSize}
-									fill="var(--pb-muted)"
-								>
-									{tick.label}
-								</text>
-							</g>
-						))}
-
-						{bars.map((bar) => (
-							<rect
-								key={bar.month}
-								x={bar.x}
-								y={bar.y}
-								width={bar.width}
-								height={bar.height}
-								rx={3}
-								fill={bar.isLatest ? 'var(--pb-brand)' : 'var(--pb-brand-soft)'}
+					<ResponsiveContainer width="100%" height={height}>
+						<ComposedChart data={series} margin={{ ...margin, bottom: 0, left: 0 }} barCategoryGap="38%" aria-label={accessibleName}>
+							<CartesianGrid vertical={false} stroke="var(--pb-line)" />
+							<XAxis
+								dataKey="month"
+								height={axisHeight}
+								tickFormatter={formatMonthLabel}
+								tick={tickStyle}
+								tickLine={false}
+								axisLine={false}
 							/>
-						))}
-
-						<polyline points={toPolyline(targetPoints)} fill="none" stroke="var(--pb-target)" strokeWidth={2} />
-						{targetPoints.map((point, index) => (
-							<circle
-								key={series[index]?.month ?? index}
-								cx={point.x}
-								cy={point.y}
-								r={3.5}
-								fill="var(--pb-surface)"
+							<YAxis
+								width={axisWidth}
+								domain={[0, maximum]}
+								ticks={buildAxisTicks(maximum)}
+								tickFormatter={formatAxisTick}
+								tick={tickStyle}
+								tickLine={false}
+								axisLine={false}
+							/>
+							<Tooltip
+								cursor={{ fill: 'var(--pb-brand-tint)' }}
+								labelFormatter={(label) => formatMonthLabel(String(label))}
+								formatter={(value, name) => [formatCurrency(Number(value)), name === 'revenue' ? 'Revenue' : 'Target']}
+							/>
+							<Bar dataKey="revenue" radius={[3, 3, 0, 0]} isAnimationActive={false}>
+								{series.map((point, index) => (
+									<Cell
+										key={point.month}
+										fill={index === series.length - 1 ? 'var(--pb-brand)' : 'var(--pb-brand-soft)'}
+									/>
+								))}
+							</Bar>
+							<Line
+								dataKey="target"
 								stroke="var(--pb-target)"
 								strokeWidth={2}
+								isAnimationActive={false}
+								dot={{ r: 3.5, fill: 'var(--pb-surface)', stroke: 'var(--pb-target)', strokeWidth: 2 }}
+								activeDot={{ r: 4.5 }}
 							/>
-						))}
-
-						{bars.map((bar) => (
-							<text
-								key={`label-${bar.month}`}
-								x={bar.x + bar.width / 2}
-								y={plot.bottom + fontSize + 8}
-								textAnchor="middle"
-								fontSize={fontSize}
-								fill="var(--pb-muted)"
-							>
-								{formatMonthLabel(bar.month)}
-							</text>
-						))}
-					</svg>
+						</ComposedChart>
+					</ResponsiveContainer>
 				</div>
 			</div>
 		</Card>
