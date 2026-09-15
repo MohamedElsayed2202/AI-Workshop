@@ -48,12 +48,16 @@ export function Modal({
 			data-testid={testId}
 			role="dialog"
 			aria-label={title}
-			// Escape fires `cancel`; the backdrop fires `close`. Both route to the caller.
+			// Escape fires `cancel`. The native `close` event is deliberately NOT wired
+			// to onClose: the cleanup below calls close(), and under StrictMode that
+			// would close the dialog the instant it opened.
 			onCancel={(event) => {
 				event.preventDefault()
 				onClose()
 			}}
-			onClose={onClose}
+			onClick={(event) => {
+				if (event.target === dialogRef.current) onClose()
+			}}
 			{...stylex.props(styles.base, presentation === 'drawer' ? styles.drawer : styles.dialog)}
 		>
 			<div {...stylex.props(styles.body)}>
